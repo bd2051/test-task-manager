@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-/public
+/public/bundle.js*
+/public/bundle.css*
 
 # local env files
 .env.local
