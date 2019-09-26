@@ -7,3 +7,5 @@ export const setDefaultTask = () => ({
   status: 'В работе',
   datetime: moment().add(1, 'day').valueOf(),
 });
+
+export const getNewKey = () => `task${Date.now()}`;

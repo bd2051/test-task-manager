@@ -13,6 +13,7 @@
       </div>
       <task-form
         :task="task"
+        :has-complete-button="!isNewTask"
         class="m-2 p-3 scoped-task"
         @task="onTask"
       />
@@ -22,9 +23,9 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import TaskForm from './taskForm.vue';
-import { setDefaultTask } from '../utils';
+import { setDefaultTask, getNewKey } from '../utils';
 
 export default {
   name: 'task',
@@ -34,7 +35,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNewKey']),
     ...mapState(['tasks']),
     isNewTask() {
       return this.taskKey === 'new';
@@ -58,7 +58,7 @@ export default {
     onTask(value) {
       this.setTask({
         value,
-        key: this.isNewTask ? this.getNewKey : this.taskKey,
+        key: this.isNewTask ? getNewKey() : this.taskKey,
       });
       this.$router.replace({ path: '/' });
     },

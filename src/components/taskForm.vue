@@ -25,6 +25,7 @@
         placeholder="Введите описание"
         rows="3"
         max-rows="6"
+        maxlength="2048"
       ></b-form-textarea>
     </b-form-group>
     <div class="d-flex align-items-end mb-5">
@@ -47,6 +48,7 @@
     </div>
     <div class="d-flex">
       <b-button
+        v-if="hasCompleteButton"
         type="button"
         :variant="isInWork ? 'success' : 'warning'"
         @click="onCLickComplete"
@@ -78,11 +80,16 @@ export default {
       required: true,
       validator: (val) => Object.keys(setDefaultTask()).every((prop) => prop in val),
     },
+    hasCompleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
       DATETIME_FORMAT: 'DD.MM.YYYY HH:mm',
-      model: setDefaultTask(),
+      model: {},
       tag: '',
     };
   },
@@ -93,18 +100,18 @@ export default {
   },
   watch: {
     task: {
-      handler() {
-        this.setModel();
+      handler(val) {
+        this.setModel(val);
       },
       deep: true,
     },
   },
   created() {
-    this.setModel();
+    this.setModel(this.task);
   },
   methods: {
-    setModel() {
-      this.model = { ...this.task };
+    setModel(value) {
+      this.model = { ...value };
       this.model.datetime = this.$moment(this.model.datetime).format(this.DATETIME_FORMAT);
       this.model.tags = this.model.tags.map((el) => ({ text: el }));
     },
@@ -120,7 +127,7 @@ export default {
       this.$emit('task', this.getModel());
     },
     onReset() {
-      this.model = setDefaultTask();
+      this.setModel(setDefaultTask());
     },
     onCLickComplete() {
       if (this.isInWork) {
